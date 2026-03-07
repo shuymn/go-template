@@ -16,6 +16,8 @@ pre-commit:
     build:
       glob: "*.go"
       run: task build
+    gitleaks:
+      run: gitleaks protect --staged
 
   skip:
     - merge: true
