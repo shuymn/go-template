@@ -13,5 +13,8 @@
 # Local binaries (golangci-lint etc.)
 /bin/
 
+# Go cache (local for LLM access)
+/.cache/
+
 # env files
 .env

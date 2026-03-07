@@ -1,6 +1,11 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
+env:
+  GOMODCACHE: "{{.ROOT_DIR}}/.cache/go-mod"
+  GOCACHE: "{{.ROOT_DIR}}/.cache/go-build"
+  GOLANGCI_LINT_CACHE: "{{.ROOT_DIR}}/.cache/golangci-lint"
+
 vars:
   BINARY_NAME: go-template
   COVERAGE_FILE: coverage.out
