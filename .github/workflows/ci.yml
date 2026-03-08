@@ -28,10 +28,13 @@ jobs:
           go-version: stable
           cache: true
 
-      - name: Check go mod tidy
+      - name: Set up Task
+        uses: shuymn/github-actions/.github/actions/setup-task@9d0c3f02ca6721c933307a596120abd9864b0783
+
+      - name: Check Go module files
         run: |
-          go mod tidy
-          git diff --exit-code go.mod go.sum
+          task tidy
+          test -z "$(git status --porcelain -- go.mod go.sum)"
 
       - name: Set golangci-lint version
         id: set-golangci-lint-version
@@ -65,14 +68,11 @@ jobs:
           go-version: stable
           cache: true
 
-      - name: Download dependencies
-        run: go mod download
-
-      - name: Verify dependencies
-        run: go mod verify
+      - name: Set up Task
+        uses: shuymn/github-actions/.github/actions/setup-task@9d0c3f02ca6721c933307a596120abd9864b0783
 
       - name: Run tests
-        run: go test -race -shuffle=on -count=10 ./...
+        run: task test
 
   build:
     name: Build
@@ -81,8 +81,6 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-    env:
-      BINARY_NAME: go-template
 
     steps:
       - name: Checkout code
@@ -96,10 +94,8 @@ jobs:
           go-version: stable
           cache: true
 
-      - name: Build binary
-        run: go build -o "${BINARY_NAME:?}" .
+      - name: Set up Task
+        uses: shuymn/github-actions/.github/actions/setup-task@9d0c3f02ca6721c933307a596120abd9864b0783
 
-      - name: Test binary exists and is executable
-        run: |
-          test -f "${BINARY_NAME:?}"
-          test -x "${BINARY_NAME:?}"
+      - name: Build binary
+        run: task build
