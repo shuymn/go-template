@@ -9,6 +9,8 @@ linters:
   default: standard
 
   enable:
+    # Extra linters here should either enforce a repo policy or catch bugs that
+    # the default set tends to miss in day-to-day Go changes.
     - bodyclose
     - containedctx
     - contextcheck
@@ -44,6 +46,8 @@ linters:
       rules:
         main:
           deny:
+            # Keep the dependency surface on stdlib-first primitives unless there
+            # is a strong project-specific reason to opt out.
             - pkg: github.com/pkg/errors
               desc: use standard errors package
             - pkg: golang.org/x/net/context
@@ -60,12 +64,18 @@ linters:
       check:
         - switch
         - map
+      # Package-scope enums are where silent drift is most expensive; local enums
+      # are usually easier to audit in-place during review.
       package-scope-only: true
 
     exhaustruct:
+      # Treat config/data boundary structs as explicit contracts so field drift is
+      # visible in diffs instead of being masked by zero values.
       include:
         - 'github\.com/shuymn/go-template/.+\.(Config|Options|Params|Query|Event)$'
       exclude:
+        # Common stdlib/framework structs are intentionally exempt because they
+        # are large, evolve outside this repo, and are rarely initialized exhaustively.
         - '.+/cobra\.Command$'
         - '.*/http\.Request'
         - '.*/http\.Response'
@@ -75,6 +85,8 @@ linters:
       allow-empty-declarations: true
 
     fatcontext:
+      # Catch contexts retained in heap objects or long-lived structs where
+      # cancellation ownership becomes ambiguous.
       check-struct-pointers: true
 
     forbidigo:
@@ -85,18 +97,25 @@ linters:
           msg: avoid commit-time print debugging
         - pattern: ^panic$
           msg: return errors instead of panicking outside process boundary code
+        # Require callers to own context roots explicitly instead of hiding them
+        # inside lower-level application code.
         - pattern: ^context\.(Background|TODO)$
           msg: pass inherited context from caller or inject one explicitly
+        # Make time and network dependencies injectable so tests and review can
+        # reason about behavior deterministically.
         - pattern: ^time\.Now$
           msg: inject a clock or time source instead of calling time.Now directly
         - pattern: ^http\.(Get|Post|PostForm|Head)$
           msg: build a request with context and use an explicit http.Client
 
     funlen:
+      # Keep the threshold high enough for table-driven tests and command wiring,
+      # but low enough that branching logic still gets pushed into helpers.
       lines: 80
       statements: 40
 
     gocognit:
+      # Nudge complex branching into smaller units before review quality drops.
       min-complexity: 15
 
     gomoddirectives:
@@ -109,6 +128,8 @@ linters:
         - shadow
 
     nolintlint:
+      # Force every suppression to explain intent so review can distinguish
+      # deliberate exceptions from lint avoidance.
       require-explanation: true
       require-specific: true
 
@@ -122,6 +143,8 @@ linters:
     rules:
       - path: _test\.go
         linters:
+          # Tests optimize for readability and focused fixtures over exhaustive
+          # production-style construction and context plumbing.
           - exhaustruct
           - funlen
           - gocognit
@@ -129,6 +152,8 @@ linters:
           - contextcheck
       - path: ^(main|cmd/.*)\.go$
         linters:
+          # Process-boundary code is allowed to decide how to terminate or emit
+          # final user-facing output.
           - forbidigo
 
 formatters:
@@ -141,6 +166,8 @@ formatters:
 
   settings:
     gci:
+      # Keep imports grouped predictably, with the module path isolated from
+      # third-party imports to reduce churn in diffs.
       sections:
         - standard
         - default
