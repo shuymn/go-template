@@ -1,26 +1,116 @@
 version: "2"
 
+run:
+  timeout: 5m
+  relative-path-mode: gomod
+  modules-download-mode: readonly
+
 linters:
-  default: all
-  disable:
+  default: standard
+
+  enable:
+    - bodyclose
+    - containedctx
+    - contextcheck
+    - copyloopvar
     - depguard
-    - cyclop
+    - errname
+    - errorlint
+    - exhaustive
     - exhaustruct
+    - fatcontext
     - forbidigo
     - funlen
-    - godot
-    - ireturn
-    - lll
-    - nlreturn
-    - paralleltest
-    - varnamelen
-    - wsl
+    - gocritic
+    - gosec
     - gocognit
-    - contextcheck
-    - wsl_v5
-    - noinlineerr
-    - gochecknoglobals
-    - goconst
+    - gomoddirectives
+    - intrange
+    - misspell
+    - nilerr
+    - noctx
+    - nolintlint
+    - predeclared
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - testifylint
+    - unconvert
+    - usestdlibvars
+    - wastedassign
+
+  settings:
+    depguard:
+      rules:
+        main:
+          deny:
+            - pkg: github.com/pkg/errors
+              desc: use standard errors package
+            - pkg: golang.org/x/net/context
+              desc: use standard library context
+            # Project-specific examples:
+            # - pkg: github.com/shuymn/go-template/internal/infra
+            #   desc: use ports/interfaces instead of importing infra directly
+
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+
+    exhaustive:
+      check:
+        - switch
+        - map
+      package-scope-only: true
+
+    exhaustruct:
+      include:
+        - 'github\.com/shuymn/go-template/.+\.(Config|Options|Params|Query|Event)$'
+      exclude:
+        - '.+/cobra\.Command$'
+        - '.*/http\.Request'
+        - '.*/http\.Response'
+        - '.*/http\.Client'
+        - '.*/tls\.Config'
+      allow-empty-returns: true
+      allow-empty-declarations: true
+
+    fatcontext:
+      check-struct-pointers: true
+
+    forbidigo:
+      analyze-types: true
+      forbid:
+        - pattern: ^print(ln)?$
+        - pattern: ^fmt\.Print.*$
+          msg: avoid commit-time print debugging
+        - pattern: ^panic$
+          msg: return errors instead of panicking outside process boundary code
+        - pattern: ^context\.(Background|TODO)$
+          msg: pass inherited context from caller or inject one explicitly
+        - pattern: ^time\.Now$
+          msg: inject a clock or time source instead of calling time.Now directly
+        - pattern: ^http\.(Get|Post|PostForm|Head)$
+          msg: build a request with context and use an explicit http.Client
+
+    funlen:
+      lines: 80
+      statements: 40
+
+    gocognit:
+      min-complexity: 15
+
+    gomoddirectives:
+      check-module-path: true
+      # Uncomment if you want to ban local replace directives:
+      # replace-local: true
+
+    govet:
+      enable:
+        - shadow
+
+    nolintlint:
+      require-explanation: true
+      require-specific: true
 
   exclusions:
     warn-unused: true
@@ -30,10 +120,16 @@ linters:
       - common-false-positives
       - legacy
     rules:
-      - linters:
-          - err113
+      - path: _test\.go
+        linters:
+          - exhaustruct
+          - funlen
+          - gocognit
           - noctx
-        path: _test\.go
+          - contextcheck
+      - path: ^cmd/.*\.go$
+        linters:
+          - forbidigo
 
 formatters:
   enable:
@@ -42,5 +138,31 @@ formatters:
     - gofumpt
     - goimports
     - golines
+
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/shuymn/go-template)
+      custom-order: true
+
+    gofumpt:
+      module-path: github.com/shuymn/go-template
+      extra-rules: true
+
+    goimports:
+      local-prefixes:
+        - github.com/shuymn/go-template
+
+    golines:
+      max-len: 120
+      reformat-tags: false
+
   exclusions:
+    generated: strict
     warn-unused: true
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
