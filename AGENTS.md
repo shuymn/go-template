@@ -17,7 +17,3 @@
 - Use table-driven tests where behavior branches are non-trivial
 - Keep tests parallel-safe (`t.Parallel()`)
 - Prefer real temp dirs/subprocess behavior over heavy mocks
-
-## Template Scope
-
-- Do not add application-specific logic; this is a development tooling template only
