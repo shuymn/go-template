@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"context"
+	"log/slog"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	slog.InfoContext(context.Background(), "Hello, World!")
 }
