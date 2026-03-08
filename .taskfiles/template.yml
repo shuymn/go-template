@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  init:
+    desc: Initialize repository from template by replacing placeholder names
+    summary: |
+      One-shot initialization: replaces the go-template module path and binary
+      name with values derived from MODULE across all tracked files, and
+      removes template-specific documentation sections.
+      MODULE defaults to the module path derived from the git remote origin URL.
+      Usage: task template:init [MODULE=github.com/owner/myapp]
+    vars:
+      OLD_MODULE: github.com/shuymn/go-template
+      OLD_BINARY: go-template
+      MODULE:
+        sh: |
+          if [ -n "{{.MODULE}}" ]; then
+            printf '%s' '{{.MODULE}}'
+          else
+            git remote get-url origin 2>/dev/null \
+              | sed 's|\.git$||; s|^https://||; s|^git@\([^:]*\):\(.*\)$|\1/\2|'
+          fi
+      NEW_BINARY:
+        sh: printf '%s' '{{.MODULE}}' | awk -F/ '{print $NF}'
+    cmds:
+      - perl -i -pe 's|\Q{{.OLD_MODULE}}\E|{{.MODULE}}|g' go.mod .golangci.yaml
+      - perl -i -pe 's|\Q{{.OLD_BINARY}}\E|{{.NEW_BINARY}}|g' Taskfile.yml .gitignore .github/workflows/ci.yml
+      - perl -i -pe 's|^# \Q{{.OLD_BINARY}}\E$|# {{.NEW_BINARY}}|' README.md
+      - perl -i -0pe 's/\nMinimal Go template with:.*?(?=\n## )/\n/s' README.md
+      - perl -i -0pe 's/\n## Template Scope\n\n[^\n]+\n/\n/' AGENTS.md
+      - rm -rf .taskfiles
