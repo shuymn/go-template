@@ -1,12 +1,6 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
-includes:
-  template:
-    taskfile: ./.taskfiles/template.yml
-    dir: "{{.ROOT_DIR}}"
-    optional: true
-
 env:
   GOMODCACHE: "{{.ROOT_DIR}}/.cache/go-mod"
   GOCACHE: "{{.ROOT_DIR}}/.cache/go-build"
