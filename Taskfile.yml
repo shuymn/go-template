@@ -37,6 +37,8 @@ tasks:
     cmds:
       - mkdir -p {{.BIN_DIR}}
       - go build -o {{.BINARY_PATH}} .
+      - test -f {{.BINARY_PATH}}
+      - test -x {{.BINARY_PATH}}
 
   build:check:
     desc: Compile-check all packages
