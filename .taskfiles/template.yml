@@ -27,6 +27,6 @@ tasks:
       - perl -i -pe 's|\Q{{.OLD_MODULE}}\E|{{.MODULE}}|g' go.mod .golangci.yaml
       - perl -i -pe 's|\Q{{.OLD_BINARY}}\E|{{.NEW_BINARY}}|g' Taskfile.yml .gitignore .github/workflows/ci.yml
       - perl -i -pe 's|^# \Q{{.OLD_BINARY}}\E$|# {{.NEW_BINARY}}|' README.md
-      - perl -i -0pe 's/\nMinimal Go template with:.*?(?=\n## )/\n/s' README.md
+      - perl -i -0pe 's/\n<!-- template:start -->.*?<!-- template:end -->\n/\n/s' README.md
       - perl -i -0pe 's/\n## Template Scope\n\n[^\n]+\n/\n/' AGENTS.md
       - rm -rf .taskfiles

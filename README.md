@@ -1,10 +1,7 @@
 # go-template
 
-Template repository for bootstrapping a new Go project.
-
-This README is intentionally temporary. After you start your own project, replace it with project-specific documentation.
-
-## What This Template Includes
+<!-- template:start -->
+Minimal Go template with:
 
 - `Taskfile.yml` as the single entrypoint for local tasks, CI, and hooks
 - `golangci-lint` for linting and formatting
@@ -12,20 +9,15 @@ This README is intentionally temporary. After you start your own project, replac
 - GitHub Actions-friendly task structure
 - Project-local caches under `.cache/` for Go and lint tooling
 - Starter docs for repository rules and review conventions
+<!-- template:end -->
 
-## First Things To Edit
+This repository was initialized from a Go project template.
 
-Use this checklist right after creating a repository from the template:
-
-1. Change the module path in [`go.mod`](go.mod).
-2. Rename the binary in [`Taskfile.yml`](Taskfile.yml) by updating `BINARY_NAME`.
-3. Replace [`main.go`](main.go) and any starter code with your actual application entrypoint and package layout.
-4. Rewrite this README with project-specific purpose, setup, run, test, and deployment information.
-5. Review [`AGENTS.md`](AGENTS.md) and [`docs/`](docs/) and keep only the rules and guidance you want in the new repository.
+Replace this README with project-specific documentation once the repository has a clear purpose, setup flow, and release process.
 
 ## Local Setup
 
-Install the required tools, then enable hooks:
+Use `task` as the primary entrypoint for local development. After installing the required tools, enable Git hooks:
 
 ```bash
 lefthook install
@@ -42,18 +34,18 @@ task fmt
 task check
 ```
 
-## Recommended Bootstrap Pass
+## Initial Customization
 
-After your first round of edits:
+Before treating this as a real project, update the repository-specific parts:
 
-1. Run `task build`.
-2. Run `task test`.
-3. Run `task check`.
-4. Commit only after the README and template defaults no longer describe `go-template`.
+1. Replace [`main.go`](main.go) and any starter code with your actual application entrypoint and package layout.
+2. Rewrite this README with your project's purpose, setup, development workflow, and release information.
+3. Review [`AGENTS.md`](AGENTS.md) and [`docs/`](docs/) and keep only the rules and guidance you want in this repository.
+4. Run `task check` before your first project-specific commit.
 
-## Replace This README With
+## Suggested README Sections
 
-When the repository stops being a template, replace this file with sections like:
+When you rewrite this file, include only the sections your project actually needs, for example:
 
 - Project overview
 - Requirements
