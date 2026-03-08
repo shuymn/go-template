@@ -127,7 +127,7 @@ linters:
           - gocognit
           - noctx
           - contextcheck
-      - path: ^cmd/.*\.go$
+      - path: ^(main|cmd/.*)\.go$
         linters:
           - forbidigo
 
