@@ -87,6 +87,21 @@ tasks:
       - go test -race -coverprofile={{.COVERAGE_FILE}} ./...
       - octocov ls-files
 
+  install:lefthook:
+    internal: true
+    desc: Install lefthook git hooks if needed
+    summary: |
+      Ensures lefthook git hooks are installed.
+      Requires lefthook to be installed and available on PATH.
+    preconditions:
+      - sh: command -v lefthook >/dev/null 2>&1
+        msg: "lefthook is not installed. Please install it first."
+    status:
+      - test -f .git/hooks/pre-commit
+      - grep -q lefthook .git/hooks/pre-commit
+    cmds:
+      - lefthook install
+
   install:golangci-lint:
     internal: true
     desc: Install golangci-lint if needed
@@ -170,6 +185,9 @@ tasks:
     summary: |
       Runs repository-wide lint and compile checks.
       Intended for fast local feedback before heavier validation.
+    deps:
+      - task: install:lefthook
+        silent: true
     cmds:
       - task: lint
       - task: build:check
@@ -180,6 +198,9 @@ tasks:
     summary: |
       Runs lint, compile checks, tests, and module hygiene checks.
       Intended for pre-push or CI-equivalent local validation.
+    deps:
+      - task: install:lefthook
+        silent: true
     cmds:
       - task: lint
       - task: build:check
