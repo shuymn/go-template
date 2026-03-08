@@ -28,6 +28,11 @@ jobs:
           go-version: stable
           cache: true
 
+      - name: Check go mod tidy
+        run: |
+          go mod tidy
+          git diff --exit-code go.mod go.sum
+
       - name: Set golangci-lint version
         id: set-golangci-lint-version
         run: echo "version=$(yq '.vars.GOLANGCI_LINT_VERSION' Taskfile.yml)" >> "$GITHUB_OUTPUT"
