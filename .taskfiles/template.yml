@@ -54,8 +54,11 @@ tasks:
           fi
       NEW_BINARY:
         sh: printf '%s' '{{.MODULE}}' | awk -F/ '{print $NF}'
+      ESCAPED_MODULE:
+        sh: printf '%s' '{{.MODULE}}' | sed 's/\./\\./g'
     cmds:
       - perl -i -pe 's|\Q{{.OLD_MODULE}}\E|{{.MODULE}}|g' go.mod .golangci.yaml
+      - perl -i -pe 's|\Qgithub\.com/shuymn/go-template\E|{{.ESCAPED_MODULE}}|g' .golangci.yaml
       - perl -i -pe 's|\Q{{.OLD_BINARY}}\E|{{.NEW_BINARY}}|g' Taskfile.yml .gitignore .github/workflows/ci.yml
       - perl -i -pe 's|^# \Q{{.OLD_BINARY}}\E$|# {{.NEW_BINARY}}|' README.md
       - perl -i -0pe 's/\n<!-- template:start -->.*?<!-- template:end -->\n/\n/s' README.md
