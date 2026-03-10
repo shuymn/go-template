@@ -76,11 +76,12 @@ linters:
       exclude:
         # Common stdlib/framework structs are intentionally exempt because they
         # are large, evolve outside this repo, and are rarely initialized exhaustively.
-        - '.+/cobra\.Command$'
         - '.*/http\.Request'
         - '.*/http\.Response'
         - '.*/http\.Client'
         - '.*/tls\.Config'
+        # kong structs are framework-managed and not exhaustively initialized.
+        - 'github\.com/alecthomas/kong\..+'
       allow-empty-returns: true
       allow-empty-declarations: true
 
