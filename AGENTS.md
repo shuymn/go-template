@@ -17,9 +17,9 @@
 
 ## Documentation Scope
 
-- Keep this file limited to always-on repository rules.
-- Treat files under `docs/` as opt-in reference material; do not read them by default.
-- Read `docs/coding.md`, `docs/testing.md`, or `docs/tooling.md` only when the user explicitly asks or the task points to them.
-- Read `docs/review.md` only for code review or when the user explicitly asks for broader review conventions.
-- Read `docs/adr/` only when historical rationale matters.
-- Read `docs/plans/` only when implementing or updating an approved design or plan.
+- Keep these instruction files limited to always-on repository rules.
+- Files under `docs/` are opt-in reference material; do not read them by default.
+  - Read `docs/coding.md`, `docs/testing.md`, or `docs/tooling.md` only when the user explicitly asks or the task points to them.
+  - Read `docs/review.md` only for code review or when the user explicitly asks for broader review conventions.
+  - Read individual ADRs under `docs/adr/` only when historical rationale matters; never read the entire directory at once.
+
